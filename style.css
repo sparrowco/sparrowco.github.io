@@ -1,0 +1,572 @@
+:root {
+    --bg-color: #0c0a09;
+    --text-color: #d4c5b0;
+    --accent-color: #a82e2e;
+    --gold-color: #f0c895;
+    --blue-color: #4a6fa5;
+    --veil: radial-gradient(circle at center, rgba(31, 20, 18, 0.4) 0%, rgba(12, 10, 9, 0.95) 100%);
+    --bg-x: 0px;
+    --bg-y: 0px;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Georgia', serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    min-height: 100dvh;
+    margin: 0;
+    text-align: center;
+    overflow: hidden;
+}
+
+/* --- PANNELLO CADETTO / AUTH (In alto a sinistra) --- */
+#user-panel {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.top-bar-btn {
+    background: rgba(12, 8, 13, 0.85);
+    border: 1px solid var(--gold-color);
+    color: var(--gold-color);
+    font-family: 'Georgia', serif;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    transition: all 0.25s ease;
+}
+
+.top-bar-btn:hover {
+    background: rgba(240, 200, 149, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(240, 200, 149, 0.4);
+}
+
+/* --- CONTROLLI AUDIO (In alto a destra) --- */
+#audio-control-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(12, 8, 13, 0.85);
+    border: 1px solid var(--gold-color);
+    padding: 6px 12px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+#audio-toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--gold-color);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+#audio-toggle-btn:hover {
+    transform: scale(1.15);
+}
+
+#volume-slider {
+    width: 70px;
+    accent-color: var(--gold-color);
+    cursor: pointer;
+}
+
+/* --- SFONDI CON MOVIMENTO PARALLASSE --- */
+#lobby-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    object-fit: cover;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 1;
+    transform: translate(var(--bg-x), var(--bg-y)) scale(1.06);
+    transition: opacity 1.5s ease-in-out, transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.bg-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(var(--bg-x), var(--bg-y)) scale(1.06);
+    transition: opacity 1.5s ease-in-out, transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.bg-layer.active { opacity: 1; }
+
+.bg-layer.bg-lobby     { background-image: var(--veil), url('images/lobby.webp'); }
+.bg-layer.bg-parapetto { background-image: var(--veil), url('images/parapetto.jpg'); }
+.bg-layer.bg-valle     { background-image: var(--veil), url('images/la_valle.jpg'); }
+.bg-layer.bg-tyrrendor { background-image: var(--veil), url('images/tyrrendor.jpg'); }
+.bg-layer.bg-desolate  { background-image: var(--veil), url('images/terre_desolate.jpg'); }
+.bg-layer.bg-isole     { background-image: var(--veil), url('images/la_palude.jpg'); }
+
+#game-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+/* ======================================================== */
+/* --- MODALE LOGIN / REGISTRAZIONE ---                     */
+/* ======================================================== */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 20000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-box {
+    background: linear-gradient(to bottom, #2b1325 0%, #150918 100%);
+    border: 2px solid var(--gold-color);
+    padding: 30px 25px;
+    width: 90%;
+    max-width: 420px;
+    box-sizing: border-box;
+    box-shadow: 0 0 30px rgba(240, 200, 149, 0.4);
+    clip-path: polygon(
+      15px 0, calc(100% - 15px) 0,
+      100% 15px, 100% calc(100% - 15px),
+      calc(100% - 15px) 100%, 15px 100%,
+      0 calc(100% - 15px), 0 15px
+    );
+}
+
+.modal-box h2 {
+    color: var(--gold-color);
+    font-size: 1.4rem;
+    margin: 0 0 10px 0;
+    letter-spacing: 2px;
+}
+
+.modal-desc {
+    font-size: 0.9rem;
+    color: #c9bfb4;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.modal-box input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--gold-color);
+    color: var(--gold-color);
+    font-family: 'Georgia', serif;
+    font-size: 1rem;
+    text-align: center;
+    letter-spacing: 1.5px;
+}
+
+.modal-box input:focus {
+    outline: none;
+    box-shadow: 0 0 10px var(--gold-color);
+}
+
+#auth-msg {
+    min-height: 20px;
+    font-size: 0.85rem;
+    color: #f7a8a8;
+    margin-bottom: 10px;
+}
+
+.modal-btn-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.choice-btn.small-btn {
+    max-width: 170px;
+    height: 45px;
+    min-height: 45px;
+    font-size: 0.85rem;
+    margin: 5px 0;
+}
+
+/* ======================================================== */
+/* --- CORNICE INTRO CON ESTERNO.PNG ---                    */
+/* ======================================================== */
+
+.intro-frame-wrapper {
+    position: relative;
+    width: 95vw;
+    max-width: 560px;
+    aspect-ratio: 1 / 1.12;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.intro-frame-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+    z-index: 3;
+    mix-blend-mode: screen;
+    filter: drop-shadow(0 0 16px rgba(240, 200, 149, 0.45));
+}
+
+.circle-box {
+    width: 66%;
+    max-width: 360px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(33, 19, 13, 0.85) 0%, rgba(8, 3, 2, 0.95) 100%);
+    border: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.9), inset 0 0 30px rgba(0, 0, 0, 0.95);
+    position: relative;
+    z-index: 2;
+    margin: 0 auto;
+    padding: 20px 15px 30px;
+    box-sizing: border-box;
+}
+
+.intro-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: var(--gold-color);
+    margin: 0 0 8px 0;
+    text-transform: uppercase;
+}
+
+.intro-title {
+    font-size: clamp(1.5rem, 4.2vw, 2rem);
+    line-height: 1.15;
+    color: #f7f0d6;
+    text-shadow: 0 0 15px rgba(240, 200, 149, 0.3);
+    margin: 0 0 20px 0;
+    text-transform: uppercase;
+}
+
+.intro-input-container {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--gold-color);
+    width: 68%;
+    margin-bottom: 18px;
+    padding-bottom: 5px;
+    position: relative;
+    z-index: 10;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.intro-input-container:focus-within {
+    border-bottom-color: var(--gold-color);
+    box-shadow: 0 2px 0 0 var(--gold-color);
+}
+
+.intro-input-container input {
+    background: transparent;
+    border: none;
+    color: var(--gold-color);
+    font-family: 'Georgia', serif;
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+    flex-grow: 1;
+    min-width: 0;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.intro-input-container input:focus { outline: none; }
+.intro-input-container input::placeholder { color: rgba(240, 200, 149, 0.65); }
+
+.submit-arrow {
+    background: transparent;
+    border: none;
+    color: var(--gold-color);
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+.submit-arrow:hover { transform: translateX(5px); }
+.submit-arrow:focus-visible { outline: 1px solid var(--gold-color); outline-offset: 3px; }
+
+.intro-footer {
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    color: var(--gold-color);
+    text-transform: uppercase;
+    margin: 0;
+}
+
+/* ======================================================== */
+/* --- CARTA FANTASY ---                                    */
+/* ======================================================== */
+
+.fantasy-card {
+    width: 90%;
+    max-width: 550px;
+    min-height: 450px;
+    max-height: 85vh;
+    max-height: 85dvh;
+    margin: 0 auto;
+    box-sizing: border-box;
+    filter: drop-shadow(0 0 15px rgba(240, 200, 149, 0.35)) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
+    display: flex;
+    flex-direction: column;
+}
+
+.fantasy-card-frame {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #c39b5b, var(--gold-color), #8b6833);
+    padding: 4px;
+    box-sizing: border-box;
+    clip-path: polygon(
+      20px 0, calc(100% - 20px) 0,
+      100% 20px, 100% calc(100% - 20px),
+      calc(100% - 20px) 100%, 20px 100%,
+      0 calc(100% - 20px), 0 20px
+    );
+    display: flex;
+    flex-direction: column;
+}
+
+.fantasy-card-inner {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(79, 33, 66, 0.75) 0%, rgba(32, 16, 29, 0.75) 40%, rgba(13, 9, 16, 0.75) 100%);
+    backdrop-filter: blur(6px);
+    clip-path: polygon(
+      18px 0, calc(100% - 18px) 0,
+      100% 18px, 100% calc(100% - 18px),
+      calc(100% - 18px) 100%, 18px 100%,
+      0 calc(100% - 18px), 0 18px
+    );
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+    box-sizing: border-box;
+}
+
+.fantasy-card-inner::before {
+    content: "";
+    position: absolute;
+    top: 15px; left: 15px; right: 15px; bottom: 15px;
+    border: 1px solid rgba(240, 200, 149, 0.25);
+    pointer-events: none;
+}
+
+.card-content {
+    color: #e6dbe3;
+    font-family: 'Georgia', serif;
+    text-align: center;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    padding-right: 5px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(240, 200, 149, 0.5) transparent;
+}
+
+.card-content::-webkit-scrollbar { width: 4px; }
+.card-content::-webkit-scrollbar-track { background: transparent; }
+.card-content::-webkit-scrollbar-thumb { background: rgba(240, 200, 149, 0.5); border-radius: 4px; }
+.card-content::-webkit-scrollbar-thumb:hover { background: rgba(240, 200, 149, 0.9); }
+
+.card-content h1 {
+    color: var(--gold-color);
+    margin-top: 0;
+    font-size: 24px;
+    font-weight: normal;
+    letter-spacing: 2px;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.card-content p {
+    line-height: 1.5;
+    font-size: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+    width: 100%;
+}
+
+/* ======================================================== */
+/* --- ARCHIVIO DEI DRAGHI (CODEX) ---                      */
+/* ======================================================== */
+
+#codex-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.codex-card {
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid var(--gold-color);
+    padding: 12px 15px;
+    border-radius: 4px;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.codex-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(240, 200, 149, 0.2);
+    padding-bottom: 5px;
+    margin-bottom: 8px;
+}
+
+.codex-dragon-name {
+    color: var(--gold-color);
+    font-weight: bold;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+}
+
+.codex-date {
+    color: #8c827a;
+    font-size: 0.8rem;
+}
+
+.codex-dragon-details {
+    font-size: 0.88rem;
+    color: #dfd5cb;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* ======================================================== */
+/* --- PULSANTE PERSONALIZZATO ---                          */
+/* ======================================================== */
+
+.choice-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 360px;
+    min-height: 55px;
+    margin: 8px auto;
+    background-color: #0c080d;
+    background-image: url('images/bottone.png');
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none;
+    color: var(--gold-color);
+    font-family: 'Georgia', serif;
+    font-size: 0.95rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
+    box-sizing: border-box;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.9);
+    padding: 12px 20px;
+    text-align: center;
+}
+
+.choice-btn:hover,
+.choice-btn:active,
+.choice-btn:focus {
+    box-shadow: 0 0 12px rgba(240, 200, 149, 0.6), inset 0 0 8px rgba(240, 200, 149, 0.3);
+    transform: translateY(-2px);
+    outline: none;
+}
+
+.center-btn { text-align: center; }
+
+#cooldown-timer {
+    font-size: 2.2rem;
+    color: var(--gold-color);
+    font-weight: bold;
+    margin-top: 15px;
+    letter-spacing: 2px;
+    flex-shrink: 0;
+}
+
+/* FADE ANIMATIONS */
+.screen { transition: opacity 0.8s ease-in-out; opacity: 1; }
+.hidden { display: none !important; }
+.word { opacity: 0; transition: opacity 0.5s ease-in; display: inline; margin-right: 4px; }
+.word.visible { opacity: 1; }
+#result-stats p { margin: 4px 0; text-align: center; font-size: 1.1rem; color: var(--gold-color); }
+#gameplay-content { transition: opacity 0.5s ease-in-out; opacity: 1; width: 100%; display: flex; flex-direction: column; align-items: center; }
+#choices-container { transition: opacity 0.8s ease-in-out; width: 100%; margin-top: auto; display: flex; flex-direction: column; align-items: center; }
+
+/* --- EFFETTO SCINTILLE --- */
+.spark {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    background-color: var(--gold-color);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    box-shadow: 0 0 8px 2px rgba(240, 200, 149, 0.8);
+    animation: spark-fly 0.6s ease-out forwards;
+}
+
+@keyframes spark-fly {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bg-layer, #lobby-video { transition: none; transform: none; }
+}
